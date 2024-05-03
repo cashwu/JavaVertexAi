@@ -14,3 +14,10 @@ GET {{host}}/ai/generateImage
 ###
 
 GET {{host}}/ai/generate_palm
+
+###
+
+GET {{host}}/langchain/generate
+
+
+###
