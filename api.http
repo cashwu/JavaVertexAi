@@ -1,0 +1,16 @@
+@host=localhost:8080
+
+GET {{host}}
+
+
+###
+
+GET {{host}}/ai/generate
+
+###
+
+GET {{host}}/ai/generateImage
+
+###
+
+GET {{host}}/ai/generate_palm
