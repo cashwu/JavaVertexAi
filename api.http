@@ -22,3 +22,9 @@ GET {{host}}/langchain/generate
 
 
 ###
+
+GET {{host}}/langchain/generate/palm
+
+###
+
+GET {{host}}/langchain/generate/image
