@@ -28,3 +28,7 @@ GET {{host}}/langchain/generate/palm
 ###
 
 GET {{host}}/langchain/generate/image
+
+###
+
+GET {{host}}/langchain/generate/edit-image

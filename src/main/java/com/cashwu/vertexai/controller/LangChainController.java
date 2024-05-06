@@ -8,14 +8,21 @@ import dev.langchain4j.model.output.Response;
 import dev.langchain4j.model.vertexai.VertexAiChatModel;
 import dev.langchain4j.model.vertexai.VertexAiGeminiChatModel;
 import dev.langchain4j.model.vertexai.VertexAiImageModel;
+import lombok.SneakyThrows;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.net.URI;
+import java.net.URL;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Base64;
 
 /**
@@ -72,8 +79,8 @@ public class LangChainController {
                                                      .modelName("imagegeneration")
                                                      .negativePrompt("")
                                                      .maxRetries(2)
-//                                                     .seed(19708L)
-//                                                     .sampleImageStyle(VertexAiImageModel.ImageStyle.photograph)
+                                                     //                                                     .seed(19708L)
+                                                     //                                                     .sampleImageStyle(VertexAiImageModel.ImageStyle.photograph)
                                                      .persistTo(Path.of("tmp/images"))
                                                      .guidanceScale(100)
                                                      .build();
@@ -83,9 +90,64 @@ public class LangChainController {
 
         Response<Image> forestResp = model.generate(prompt);
 
-
-
         String base64Image = forestResp.content()
+                                       .base64Data();
+
+        // 解碼 Base64 字串到 byte 陣列
+        byte[] imageBytes = Base64.getDecoder()
+                                  .decode(base64Image);
+
+        // 創建 HttpHeaders 物件並設置内容類型為透明圖片
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.IMAGE_PNG);
+
+        // 返回 ResponseEntity 物件
+        return ResponseEntity.ok()
+                             .headers(headers)
+                             .body(imageBytes);
+    }
+
+    @SneakyThrows
+    @GetMapping("/langchain/generate/edit-image")
+    public ResponseEntity<byte[]> generate_edit_image() {
+
+        VertexAiImageModel model = VertexAiImageModel.builder()
+                                                     .endpoint(endpoint)
+                                                     .publisher("google")
+                                                     .project(projectId)
+                                                     .location(location)
+                                                     .modelName("imagegeneration")
+                                                     .negativePrompt("")
+                                                     .maxRetries(2)
+                                                     .guidanceScale(100)
+                                                     .persistTo(Path.of("tmp/images"))
+                                                     //                                                     .guidanceScale(100)
+                                                     //                                                     .language("zh-tw")
+                                                     .build();
+
+        String imageUri = "tmp/images/imagen-image-123.png";
+
+        String imageBase64 = convertImageToBase64(imageUri);
+
+        Image image = Image.builder()
+                           .base64Data(imageBase64)
+                           .build();
+
+        String maskImageUri = "tmp/images/imagen-image-123-editor-area.png";
+
+        String maskImageBase64 = convertImageToBase64(maskImageUri);
+
+        Image imageMask = Image.builder()
+                               .base64Data(maskImageBase64)
+                               .build();
+
+//        Response<Image> response = model.edit(image, imageMask, "a large stone covered with moss replace it");
+//        Response<Image> response = model.edit(image, imageMask, "change color to all yellow");
+
+                Response<Image> response = model.edit(image,
+                                                      "change color to yellow");
+
+        String base64Image = response.content()
                                      .base64Data();
 
         // 解碼 Base64 字串到 byte 陣列
@@ -100,5 +162,18 @@ public class LangChainController {
         return ResponseEntity.ok()
                              .headers(headers)
                              .body(imageBytes);
+    }
+
+    private static String convertImageToBase64(String imagePath) throws Exception {
+        File file = new File(imagePath);
+        BufferedImage bufferedImage = ImageIO.read(file);
+
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        ImageIO.write(bufferedImage, "png", byteArrayOutputStream);
+
+        byte[] imageBytes = byteArrayOutputStream.toByteArray();
+
+        return Base64.getEncoder()
+                     .encodeToString(imageBytes);
     }
 }
