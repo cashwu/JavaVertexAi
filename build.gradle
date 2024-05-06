@@ -30,31 +30,14 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
 
-    // https://mvnrepository.com/artifact/com.google.cloud/google-cloud-vertexai
-    implementation 'com.google.cloud:google-cloud-vertexai:1.2.0'
-
-    // https://mvnrepository.com/artifact/com.google.cloud/google-cloud-aiplatform
-    implementation 'com.google.cloud:google-cloud-aiplatform:3.43.0'
-
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'com.h2database:h2'
     runtimeOnly 'org.postgresql:postgresql'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
-    // This dependency is used by the application.
-    implementation 'dev.langchain4j:langchain4j:0.29.0'
-    implementation 'dev.langchain4j:langchain4j-vertex-ai:0.29.0'
-    implementation 'dev.langchain4j:langchain4j-vertex-ai-gemini:0.29.0'
-    implementation 'dev.langchain4j:langchain4j-document-parser-apache-pdfbox:0.29.0'
-}
-
-tasks.named('test') {
-    useJUnitPlatform()
-}
-
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
-    }
+    implementation 'dev.langchain4j:langchain4j:0.30.0'
+    implementation 'dev.langchain4j:langchain4j-vertex-ai:0.30.0'
+    implementation 'dev.langchain4j:langchain4j-vertex-ai-gemini:0.30.0'
+    implementation 'dev.langchain4j:langchain4j-document-parser-apache-pdfbox:0.30.0'
 }

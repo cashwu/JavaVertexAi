@@ -26,8 +26,8 @@ import java.util.*;
 @RestController
 public class HomeController {
 
-    private final String projectId = System.getenv("PROJECT_ID");
-    private final String location = System.getenv("LOCATION");
+    private final String projectId = System.getenv("PROJECT_ID").trim();
+    private final String location = System.getenv("LOCATION").trim();
     private final String modelName = "gemini-1.0-pro";
 
     private final String prompt = "隨便跟我說一個笑話，使用正體中文回答";
@@ -53,7 +53,10 @@ public class HomeController {
 
     @GetMapping("/")
     public String Index() {
-        return "ok";
+
+//        System.out.println("project id : " + System.getenv("PROJECT_ID"));
+//        System.out.println("location : " + System.getenv("LOCATION"));
+        return System.getenv("PROJECT_ID") + " : " + System.getenv("LOCATION");
     }
 
     @GetMapping("/ai/generate")
