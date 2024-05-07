@@ -86,7 +86,7 @@ public class LangChainController {
                                                      .build();
 
         //        String prompt = "幫我產生一張風景圖片，下面是我的需求「Imagine standing on the top of a hill, overlooking a tranquil lake surrounded by majestic mountains, with a few fluffy clouds floating in the clear blue sky above.」";
-        String prompt = "lush forest";
+        String prompt = "a cat at the beach";
 
         Response<Image> forestResp = model.generate(prompt);
 
@@ -116,7 +116,7 @@ public class LangChainController {
                                                      .publisher("google")
                                                      .project(projectId)
                                                      .location(location)
-                                                     .modelName("imagegeneration")
+                                                     .modelName("imagegeneration@002")
                                                      .negativePrompt("")
                                                      .maxRetries(2)
                                                      .guidanceScale(100)
@@ -145,7 +145,7 @@ public class LangChainController {
 //        Response<Image> response = model.edit(image, imageMask, "change color to all yellow");
 
                 Response<Image> response = model.edit(image,
-                                                      "change color to yellow");
+                                                      "change cat color to white and black");
 
         String base64Image = response.content()
                                      .base64Data();
